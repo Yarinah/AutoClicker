@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, simpledialog
 import threading
-import pyautogui
 
 from mouseClicker import mouseClickerObject
 
@@ -14,7 +13,12 @@ class autoClickerGUI(tk.Frame):
         self.create_widgets()
         self.mouse_clicker = mouseClickerObject()
         
+        self.update_mouse_pos()
+        self.master.bind("s", self.set_mouse_pos)
+        
     def create_widgets(self):
+        self.info = tk.Label(self, text="S = set mouse position")
+
         # Interval configuration
         self.interval_label = tk.Label(self, text="Interval (seconds)")
         self.interval_label.pack()
@@ -41,8 +45,27 @@ class autoClickerGUI(tk.Frame):
         self.quit = tk.Button(self, text="QUIT", fg="red", command=self.master.destroy)
         self.quit.pack(side="bottom")
         
+        # Real time mouse position
+        self.mouse_pos_label = tk.Label(self, text="Mouse position")
+        self.mouse_pos_label.pack()
+        self.mouse_pos = tk.Label(self, text="")
+        self.mouse_pos.pack()
+        
+        # Choosen mouse position
+        self.choosen_mouse_pos = tk.Label(self, text="")
+        self.choosen_mouse_pos.pack()
+        
+                
+    def get_mouse_pos(self):
+        return self.mouse_clicker.getMousePos()
+    
     def set_mouse_pos(self):
         self.mouse_clicker.setXY_MousePos()
+        self.choosen_mouse_pos["text"] = self.get_mouse_pos()
+
+    def update_mouse_pos(self):
+        self.mouse_pos["text"] = self.get_mouse_pos()
+        self.after(100, self.update_mouse_pos)
         
     def start_clicking(self):
         self.mouse_clicker.setInterval(float(self.interval_entry.get()))

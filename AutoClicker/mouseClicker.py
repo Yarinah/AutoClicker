@@ -1,4 +1,4 @@
-from ast import Try
+#from ast import Try
 import os
 import pathlib
 import pyautogui
